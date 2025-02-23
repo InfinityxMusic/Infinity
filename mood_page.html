@@ -8,97 +8,179 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        #bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
         }
         .container {
             display: flex;
-            width: 90%;
-            max-width: 1200px;
-            height: 80vh;
+            height: 100vh;
             gap: 10px;
         }
         .section {
             flex: 1;
-            background: rgba(31, 31, 31, 0.8);
             padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            background: rgba(31, 31, 31, 0.6);
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            justify-content: center;
-        }
-        #mood-image {
-            width: 100%;
-            max-width: 250px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
         }
         iframe {
             width: 100%;
-            height: 100%;
+            height: 80%;
             border-radius: 10px;
+        }
+        .chatbox {
+            display: flex;
+            flex-direction: column;
+            height: 80%;
+            border-radius: 10px;
+            padding: 10px;
+            background: rgba(20, 20, 20, 0.8);
+            width: 90%;
+        }
+        .chat-input-container {
+            display: flex;
+            gap: 5px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+        }
+        .send-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: black;
+            color: white;
+            cursor: pointer;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        .message {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .user {
+            background: #007bff;
+            text-align: right;
+        }
+        .bot {
+            background: #444;
+            text-align: left;
+        }
+        #chatbot {
+            order: 2;
+        }
+        #music {
+            order: 3;
+        }
+        #mood-display {
+            order: 1;
         }
     </style>
 </head>
 <body>
-
-    <h1 id="mood-title">Your Mood</h1>
-
+    <div class="video-background">
+        <video autoplay muted loop id="bg-video">
+            <source src="https://cdn.pixabay.com/video/2019/10/24/28236-368501609_large.mp4" type="video/mp4">
+        </video>
+    </div>
     <div class="container">
-        <!-- YouTube Music Player -->
-        <div class="section">
-            <h2>Music Player</h2>
-            <iframe id="youtube-player" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <!-- Chatbot Section -->
-        <div class="section">
-            <h2>Chatbot</h2>
-            <p>(Chatbot integration goes here)</p>
-        </div>
-
-        <!-- Mood Image Section -->
-        <div class="section">
+        <div class="section" id="mood-display">
             <h2>Current Mood</h2>
-            <img id="mood-image" src="" alt="Mood Image">
+            <img id="mood-image" src="" alt="Mood Image" style="width: 80%; border-radius: 10px;">
+        </div>
+        <div class="section" id="chatbot">
+            <h2>Chatbot</h2>
+            <div class="chatbox">
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+                    <button class="send-button" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="music">
+            <h2>Music Player</h2>
+            <iframe id="youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
     </div>
-
     <script>
-        // Get mood from URL
         const params = new URLSearchParams(window.location.search);
-        const mood = params.get("mood") || "happy";
+        const mood = params.get("mood");
+        const youtube = document.getElementById("youtube");
+        const moodImage = document.getElementById("mood-image");
+        const chatMessages = document.getElementById("chat-messages");
+        const chatInput = document.getElementById("chat-input");
 
-        // Update page based on mood
-        document.getElementById("mood-title").innerText = `Your Mood: ${mood.charAt(0).toUpperCase() + mood.slice(1)}`;
-
-        // Mood images (should match your main page images)
-        const moodImages = {
-            happy: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg",
-            sad: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg",
-            energetic: "https://cdn.hero.page/pfp/27d65eee-28ba-4f45-a76a-eb6f88545ce2-anime-boy-with-mysterious-aura-unique-anime-boy-pfp-aesthetic-2.png",
-            relaxed: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0cy7BVUT7GBT3Aeeul5u_jUFn-c10FPYyD6nISi_RUk6qIRC_7S4c1nSP_sFXa8mWdZw&usqp=CAU"
+        const moodData = {
+            happy: { 
+                video: "https://www.youtube.com/embed/d-diB65scQU?autoplay=1", 
+                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg",
+                botMessages: ["I'm so glad you're happy! 😊", "Keep smiling and enjoy your day!", "Happiness looks great on you!"]
+            },
+            sad: { 
+                video: "https://www.youtube.com/embed/K5KAc5CoCuk?autoplay=1", 
+                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg",
+                botMessages: ["I'm here for you. 💙", "It's okay to feel sad sometimes.", "Remember, you're not alone."]
+            }
         };
 
-        document.getElementById("mood-image").src = moodImages[mood] || moodImages["happy"];
+        if (moodData[mood]) {
+            youtube.src = moodData[mood].video;
+            moodImage.src = moodData[mood].img;
+            moodData[mood].botMessages.forEach(msg => appendMessage("bot", msg));
+        }
 
-        // YouTube Music Player (Change URLs to match moods)
-        const youtubeLinks = {
-            happy: "https://www.youtube.com/embed/d-diB65scQU",
-            sad: "https://www.youtube.com/embed/kJQP7kiw5Fk",
-            energetic: "https://www.youtube.com/embed/fLexgOxsZu0",
-            relaxed: "https://www.youtube.com/embed/2Vv-BfVoq4g"
-        };
+        function handleKeyPress(event) {
+            if (event.key === "Enter") sendMessage();
+        }
 
-        document.getElementById("youtube-player").src = youtubeLinks[mood] || youtubeLinks["happy"];
+        function sendMessage() {
+            const userText = chatInput.value.trim();
+            if (userText) {
+                appendMessage("user", userText);
+                setTimeout(() => appendMessage("bot", "I'm ChatGPT! How can I help?"), 1000);
+                chatInput.value = "";
+            }
+        }
+
+        function appendMessage(type, text) {
+            const msg = document.createElement("div");
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     </script>
-
 </body>
 </html>

@@ -144,42 +144,27 @@
 
         const moodData = {
             happy: { 
-                video: "https://www.youtube.com/embed/d-diB65scQU?autoplay=1", 
-                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg",
-                botMessages: ["I'm so glad you're happy! 😊", "Keep smiling and enjoy your day!", "Happiness looks great on you!"]
+                videos: [
+                    "https://www.youtube.com/embed/d-diB65scQU?autoplay=1",
+                    "https://www.youtube.com/embed/5JxgDJvqGmM?autoplay=1",
+                    "https://www.youtube.com/embed/8Z3h4GzMvos?autoplay=1"
+                ],
+                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg"
             },
             sad: { 
-                video: "https://www.youtube.com/embed/K5KAc5CoCuk?autoplay=1", 
-                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg",
-                botMessages: ["I'm here for you. 💙", "It's okay to feel sad sometimes.", "Remember, you're not alone."]
+                videos: [
+                    "https://www.youtube.com/embed/K5KAc5CoCuk?autoplay=1",
+                    "https://www.youtube.com/embed/EYnf7vRjXJM?autoplay=1",
+                    "https://www.youtube.com/embed/7o6hJaj9JXo?autoplay=1"
+                ],
+                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg"
             }
         };
 
         if (moodData[mood]) {
-            youtube.src = moodData[mood].video;
+            const randomVideo = moodData[mood].videos[Math.floor(Math.random() * moodData[mood].videos.length)];
+            youtube.src = randomVideo;
             moodImage.src = moodData[mood].img;
-            moodData[mood].botMessages.forEach(msg => appendMessage("bot", msg));
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === "Enter") sendMessage();
-        }
-
-        function sendMessage() {
-            const userText = chatInput.value.trim();
-            if (userText) {
-                appendMessage("user", userText);
-                setTimeout(() => appendMessage("bot", "I'm ChatGPT! How can I help?"), 1000);
-                chatInput.value = "";
-            }
-        }
-
-        function appendMessage(type, text) {
-            const msg = document.createElement("div");
-            msg.className = `message ${type}`;
-            msg.textContent = text;
-            chatMessages.appendChild(msg);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
     </script>
 </body>

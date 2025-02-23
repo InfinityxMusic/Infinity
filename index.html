@@ -32,10 +32,7 @@
         .featured {
             padding: 2rem;
         }
-        .featured h2 {
-            background: linear-gradient(to right, #FF416C, #FF4B2B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        white;
             margin-bottom: 1rem;
         }
         .card {
@@ -43,20 +40,20 @@
             border-radius: 10px;
             padding: 1rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            text-align: center;
+            
         }
         .card img {
             width: 100%;
             border-radius: 10px;
         }
-            @keyframes fadeIn {
+        @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .card {
             animation: fadeIn 1s ease-in-out;
         }
-            @media (max-width: 600px) {
+        @media (max-width: 600px) {
             .navbar {
                 flex-direction: column;
             }
@@ -73,7 +70,7 @@
                 width: 80%;
             }
         }
-            .video-background {
+        .video-background {
             position: fixed;
             top: 0;
             left: 0;
@@ -88,7 +85,36 @@
             height: 100%;
             object-fit: cover;
         }
-    </style>
+        .music-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(31, 31, 31, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .music-player .controls button {
+            background: linear-gradient(to right, #FF416C, #FF4B2B);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .music-player .track-info {
+            color: white;
+            
+        }
+        .mood-bar { display: flex; justify-content: space-around; align-items: center; gap: 2rem; padding:2.5rem 2rem  1rem 2rem;; background: rgba(31, 31, 31, 0.5); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); margin-top: 3rem;  border-radius: 20px;}
+        .mood-bar .mood p { text-transform: uppercase; text-align: center; margin-top: 2rem; animation: textGlow 1.5s ease-in-out infinite alternate; transition: transform 0.3s ease; }
+.mood-bar .mood img { width: 190px; height: 190px; object-fit: cover; border-radius: 10px; box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); transition: transform 0.3s ease; animation: imageGlow 1.5s ease-in-out infinite alternate; }
+.mood-bar .mood img:hover { transform: scale(1.1); } .mood-bar .mood:hover p { transform: scale(1.2); }
+    @keyframes textSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } @keyframes textGlow { 0%, 100% { text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 20px #fff, 0 0 25px #fff, 0 0 30px #fff; } 50% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #fff, 0 0 25px #fff; } } 50% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #fff, 0 0 35px #fff, 0 0 40px #fff, 0 0 50px #fff; }} 50% { text-shadow: 0 0 5px #fff, 0 0 10px #FF416C, 0 0 15px #FF4B2B, 0 0 20px #FF4B2B, 0 0 35px #FF4B2B, 0 0 40px #FF4B2B, 0 0 50px #FF4B2B; }} 50% { color: #FF416C; text-shadow: 0 0 15px #FF4B2B, 0 0 20px #FF4B2B, 0 0 30px #FF4B2B; transform: translateY(-5px); } 100% { color: #fff; text-shadow: 0 0 10px #fff, 0 0 20px #FF416C, 0 0 30px #FF4B2B; transform: translateY(0); }} to { color: #FF416C; text-shadow: 0 0 10px #FF4B2B, 0 0 20px #FF4B2B, 0 0 30px #FF4B2B; transform: translateY(0); } } to { color: #FF416C; text-shadow: 0 0 10px #FF4B2B, 0 0 20px #FF4B2B, 0 0 30px #FF4B2B; } } @keyframes imageGlow { 0%, 100% { box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff; } 50% { box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #fff; } }</style>
 </head>
 <body>
     <div class="video-background">
@@ -105,13 +131,25 @@
             <a href="#">Library</a>
         </div>
     </nav>
-
     <section class="featured">
-        <h2>Featured Playlists</h2>
-        <div class="card">
-            <img src="https://via.placeholder.com/300x300" alt="Playlist Image">
-            <h3>Top Hits</h3>
-            <p>Listen to the latest top chartbusters!</p>
+        <center><h2>Select Your Mood !</h2></center>
+        <div class="mood-bar">
+            <div class="mood">
+                <img src="https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg" alt="Happy">
+                <p>Happy</p>
+            </div>
+            <div class="mood">
+                <img src="https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg" alt="Sad">
+                <p>Sad</p>
+            </div>
+            <div class="mood">
+                <img src="https://cdn.hero.page/pfp/27d65eee-28ba-4f45-a76a-eb6f88545ce2-anime-boy-with-mysterious-aura-unique-anime-boy-pfp-aesthetic-2.png" alt="Energetic">
+                <p>Energetic</p>
+            </div>
+            <div class="mood">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0cy7BVUT7GBT3Aeeul5u_jUFn-c10FPYyD6nISi_RUk6qIRC_7S4c1nSP_sFXa8mWdZw&usqp=CAU" alt="Relaxed">
+                <p>Relaxed</p>
+            </div>
         </div>
     </section>
 </body>

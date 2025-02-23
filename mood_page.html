@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            gap: 10px;
+        }
+        .section {
+            flex: 1;
+            background: rgba(31, 31, 31, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #mood-image {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="mood-title">Your Mood</h1>
+
+    <div class="container">
+        <!-- YouTube Music Player -->
+        <div class="section">
+            <h2>Music Player</h2>
+            <iframe id="youtube-player" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <!-- Chatbot Section -->
+        <div class="section">
+            <h2>Chatbot</h2>
+            <p>(Chatbot integration goes here)</p>
+        </div>
+
+        <!-- Mood Image Section -->
+        <div class="section">
+            <h2>Current Mood</h2>
+            <img id="mood-image" src="" alt="Mood Image">
+        </div>
+    </div>
+
+    <script>
+        // Get mood from URL
+        const params = new URLSearchParams(window.location.search);
+        const mood = params.get("mood") || "happy";
+
+        // Update page based on mood
+        document.getElementById("mood-title").innerText = `Your Mood: ${mood.charAt(0).toUpperCase() + mood.slice(1)}`;
+
+        // Mood images (should match your main page images)
+        const moodImages = {
+            happy: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg",
+            sad: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg",
+            energetic: "https://cdn.hero.page/pfp/27d65eee-28ba-4f45-a76a-eb6f88545ce2-anime-boy-with-mysterious-aura-unique-anime-boy-pfp-aesthetic-2.png",
+            relaxed: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0cy7BVUT7GBT3Aeeul5u_jUFn-c10FPYyD6nISi_RUk6qIRC_7S4c1nSP_sFXa8mWdZw&usqp=CAU"
+        };
+
+        document.getElementById("mood-image").src = moodImages[mood] || moodImages["happy"];
+
+        // YouTube Music Player (Change URLs to match moods)
+        const youtubeLinks = {
+            happy: "https://www.youtube.com/embed/d-diB65scQU",
+            sad: "https://www.youtube.com/embed/kJQP7kiw5Fk",
+            energetic: "https://www.youtube.com/embed/fLexgOxsZu0",
+            relaxed: "https://www.youtube.com/embed/2Vv-BfVoq4g"
+        };
+
+        document.getElementById("youtube-player").src = youtubeLinks[mood] || youtubeLinks["happy"];
+    </script>
+
+</body>
+</html>

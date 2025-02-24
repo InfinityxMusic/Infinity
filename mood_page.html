@@ -51,45 +51,12 @@
             border-radius: 15px;
             transition: box-shadow 0.5s ease-in-out;
         }
-        .chatbox {
-            display: flex;
-            flex-direction: column;
-            height: 80%;
-            border-radius: 10px;
-            padding: 10px;
-            background: rgba(20, 20, 20, 0.8);
-            width: 90%;
-            justify-content: flex-end;
+        .glow {
+            animation: glowing 2s infinite alternate;
         }
-        .chat-input-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: auto;
-            padding: 5px;
-            background: rgba(50, 50, 50, 0.8);
-            border-radius: 5px;
-            width: 100%;
-        }
-        .chat-input {
-            flex: 1;
-            padding: 5px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .send-button {
-            margin-left: 5px;
-            padding: 5px 10px;
-            background-color: black;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .send-button:hover {
-            background-color: #333;
+        @keyframes glowing {
+            0% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+            100% { box-shadow: 0 0 30px rgba(255, 255, 255, 1); }
         }
     </style>
 </head>
@@ -109,19 +76,9 @@
                 <option value="relaxed">Relaxed</option>
             </select>
         </div>
-        <div class="section" id="chatbot">
-            <h2>Chatbot</h2>
-            <div class="chatbox">
-                <div class="chat-messages" id="chat-messages"></div>
-                <div class="chat-input-container">
-                    <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-                    <button class="send-button" onclick="sendMessage()">Send</button>
-                </div>
-            </div>
-        </div>
         <div class="section" id="music">
             <h2>Music Player</h2>
-            <iframe id="youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe id="youtube" class="glow" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             <div id="song-details">Now Playing: </div>
         </div>
     </div>
@@ -144,11 +101,6 @@
             document.getElementById("song-details").innerText = "Now Playing: " + mood;
         }
 
-        function updateGlow(color) {
-            const [r, g, b] = color;
-            musicPlayer.style.boxShadow = `0 0 25px rgba(${r}, ${g}, ${b}, 0.8)`;
-        }
-
         function extractColor() {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
@@ -165,8 +117,13 @@
             };
         }
 
+        function updateGlow(color) {
+            const [r, g, b] = color;
+            musicPlayer.style.boxShadow = `0 0 25px rgba(${r}, ${g}, ${b}, 0.8)`;
+        }
+
         video.addEventListener("play", () => {
-            setInterval(extractColor, 1000);
+            setInterval(extractColor, 2000);
         });
     </script>
 </body>

@@ -43,16 +43,12 @@
             background: rgba(31, 31, 31, 0.8);
             border-radius: 10px;
         }
-        .chatbot, .video-container {
+        .mood-details {
             background: rgba(31, 31, 31, 0.8);
             padding: 1rem;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-        }
-        iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
+            text-align: left; /* Align text to the left */
         }
         .music-controls {
             position: fixed;
@@ -76,9 +72,7 @@
     <canvas id="background-canvas"></canvas>
     <div class="container">
         <div class="mood-display">Current Mood: <span id="mood"></span></div>
-        <div class="video-container">
-            <iframe id="youtube-frame" allow="autoplay" allowfullscreen></iframe>
-        </div>
+        <div class="mood-details" id="mood-details"></div>
         <div class="chatbot">
             <iframe src="chatbot.html"></iframe>
         </div>
@@ -117,35 +111,85 @@
             ]
         };
 
-        let currentIndex = 0;
-        let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
-        const youtubeFrame = document.getElementById("youtube-frame");
-        const backgroundCanvas = document.getElementById("background-canvas");
-        const ctx = backgroundCanvas.getContext("2d");
-
-        function loadVideo(index) {
-            youtubeFrame.src = currentPlaylist[index];
-        }
-
-        youtubeFrame.onload = function() {
-            function drawBackground() {
-                ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
-                ctx.drawImage(youtubeFrame, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
-                requestAnimationFrame(drawBackground);
+        const moodDetails = {
+            happy: {
+                details: "Happiness is a state of mind. Enjoy the moment!",
+                motivatingLines: [
+                    "Every day is a new opportunity to shine.",
+                    "Your smile can brighten someone's day.",
+                    "Embrace the joy around you."
+                ]
+            },
+            sad: {
+                details: "It's okay to feel sad sometimes. Remember, this too shall pass.",
+                motivatingLines: [
+                    "Tough times never last, but tough people do.",
+                    "You are stronger than you think.",
+                    "Let your tears water the seeds of your soul."
+                ]
+            },
+            energetic: {
+                details: "Feel the energy flowing through you. Let's get things done!",
+                motivatingLines: [
+                    "The only limit is the one you set yourself.",
+                    "Your energy is contagious.",
+                    "Go the extra mile, it's never crowded."
+                ]
+            },
+            relaxed: {
+                details: "Take a deep breath and relax. You deserve this moment of peace.",
+                motivatingLines: [
+                    "Peace begins with a smile.",
+                    "Sometimes the most productive thing you can do is relax.",
+                    "Find joy in the simple things."
+                ]
+            },
+            neutral: {
+                details: "A balanced state of mind. Find your center.",
+                motivatingLines: [
+                    "Every moment is a fresh beginning.",
+                    "Stay grounded, stay focused.",
+                    "Find beauty in the ordinary."
+                ]
             }
-
-            backgroundCanvas.width = window.innerWidth;
-            backgroundCanvas.height = window.innerHeight;
-            drawBackground();
         };
 
-        document.getElementById("play").addEventListener("click", () => {
-            youtubeFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        });
+        let currentIndex = 0;
+        let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
+        const backgroundCanvas = document.getElementById("background-canvas");
+        const ctx = backgroundCanvas.getContext("2d");
+        const moodDetailsDiv = document.getElementById("mood-details");
 
-        document.getElementById("pause").addEventListener("click", () => {
-            youtubeFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        });
+        function loadVideo(index) {
+            const videoUrl = currentPlaylist[index];
+            const video = document.createElement('video');
+            video.src = videoUrl;
+            video.crossOrigin = "anonymous";
+            video.style.display = 'none';
+            document.body.appendChild(video);
+
+            video.onloadedmetadata = function() {
+                function drawBackground() {
+                    ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+                    ctx.drawImage(video, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+                    requestAnimationFrame(drawBackground);
+                }
+
+                backgroundCanvas.width = window.innerWidth;
+                backgroundCanvas.height = window.innerHeight;
+                drawBackground();
+            };
+
+            const currentMoodDetails = moodDetails[mood] || moodDetails['neutral'];
+            moodDetailsDiv.innerHTML = `
+                <p><strong>Details:</strong> ${currentMoodDetails.details}</p>
+                <p><strong>Motivating Lines:</strong></p>
+                <ul>
+                    ${currentMoodDetails.motivatingLines.map(line => `<li>${line}</li>`).join('')}
+                </ul>
+            `;
+
+        }
 
         document.getElementById("prev").addEventListener("click", () => {
             currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;

@@ -3,101 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Music and Games</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <title>Mood-Based Experience</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        .game-container {
-            border: 1px solid #ccc;
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0d0d0d;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        #background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: background 0.5s ease;
+        }
+        .blur-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        #mood-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #quote {
+            font-style: italic;
+            margin: 10px 0;
+        }
+        #youtube-player {
+            margin: 20px 0;
+            width: 100%;
+            height: 315px;
+        }
+        #visualizer {
+            width: 100%;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        #game-section {
+            margin: 20px 0;
             padding: 10px;
-            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        #music-player {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
         }
     </style>
-</head>
-<body class="bg-gray-200">
-    <div class="fixed top-4 right-4 bg-white p-2 rounded shadow">
-        <span id="moodDisplay" class="font-semibold"></span>
-    </div>
-
-    <div class="flex flex-col items-center justify-center min-h-screen">
-        <div id="player" class="w-full max-w-2xl mb-8"></div>
-
-        <div id="games" class="w-full max-w-2xl">
-            </div>
-    </div>
-
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const mood = urlParams.get('mood');
-        document.getElementById('moodDisplay').textContent = mood.toUpperCase();
-
-        // ... (YouTube player code remains the same) ...
-
-        function loadGames(mood) {
-            const gamesDiv = document.getElementById("games");
-            gamesDiv.innerHTML = ""; // Clear previous games.
-
-            if (mood === "happy") {
-                gamesDiv.innerHTML = `
-                    <div class="game-container">
-                        <h3>Happy Clicker</h3>
-                        <button id="happyClicker" class="bg-yellow-400 hover:bg-yellow-500 p-2 rounded">Click Me!</button>
-                        <p id="happyScore">Score: 0</p>
-                    </div>
-                `;
-                let happyScore = 0;
-                document.getElementById("happyClicker").addEventListener("click", () => {
-                    happyScore++;
-                    document.getElementById("happyScore").textContent = `Score: ${happyScore}`;
-                });
-            } else if (mood === "sad") {
-                gamesDiv.innerHTML = `
-                    <div class="game-container">
-                        <h3>Memory Match (Simple)</h3>
-                        <p>Find the matching pairs.</p>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="bg-gray-300 p-4 rounded">A</div>
-                            <div class="bg-gray-300 p-4 rounded">B</div>
-                            <div class="bg-gray-300 p-4 rounded">A</div>
-                            <div class="bg-gray-300 p-4 rounded">B</div>
-                        </div>
-                    </div>
-                `;
-            } else if (mood === "energetic") {
-                gamesDiv.innerHTML = `
-                    <div class="game-container">
-                        <h3>Quick Reaction Test</h3>
-                        <button id="reactionTest" class="bg-red-500 hover:bg-red-600 p-2 rounded text-white">Start</button>
-                        <p id="reactionTime"></p>
-                    </div>
-                `;
-                document.getElementById("reactionTest").addEventListener("click", () => {
-                    let startTime;
-                    document.getElementById("reactionTest").disabled = true;
-                    setTimeout(() => {
-                        document.getElementById("reactionTest").textContent = "Click Now!";
-                        startTime = Date.now();
-                    }, Math.random() * 2000 + 500); // Random delay
-                    document.getElementById("reactionTest").addEventListener("click", () => {
-                        const endTime = Date.now();
-                        const reactionTime = endTime - startTime;
-                        document.getElementById("reactionTime").textContent = `Reaction Time: ${reactionTime}ms`;
-                        document.getElementById("reactionTest").textContent = "Start";
-                        document.getElementById("reactionTest").disabled = false;
-                    }, {once: true});
-                });
-            } else if (mood === "relaxed") {
-                gamesDiv.innerHTML = `
-                    <div class="game-container">
-                        <h3>Simple Breathing Exercise</h3>
-                        <div class="w-20 h-20 rounded-full bg-blue-200 animate-pulse"></div>
-                        <p>Breathe in and out with the pulse.</p>
-                    </div>
-                `;
+        let moods = {
+            happy: { video: "d-diB65scQU", bg: "happy.jpg", quote: "Happiness is a journey, not a destination." },
+            sad: { video: "sIaT8Jl2zpI", bg: "sad.jpg", quote: "Tears come from the heart, not the brain." },
+            energetic: { video: "3GwjfUFyY6M", bg: "energetic.jpg", quote: "Energy and persistence conquer all things." },
+            relaxed: { video: "5qap5aO4i9A", bg: "relaxed.jpg", quote: "Relax, refresh, recharge." }
+        };
+        
+        function loadMood() {
+            let params = new URLSearchParams(window.location.search);
+            let mood = params.get("mood");
+            if (mood && moods[mood]) {
+                document.getElementById("mood-name").innerText = mood.charAt(0).toUpperCase() + mood.slice(1);
+                document.getElementById("quote").innerText = moods[mood].quote;
+                document.getElementById("background").style.backgroundImage = `url(${moods[mood].bg})`;
+                
+                let playerDiv = document.getElementById("youtube-player");
+                playerDiv.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${moods[mood].video}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
             }
         }
-        loadGames(mood);
-
+        window.onload = loadMood;
     </script>
+</head>
+<body>
+    <div class="container">
+        <div id="background"></div>
+        <div class="blur-box">
+            <h1 id="mood-title">Your Mood: <span id="mood-name"></span></h1>
+            <p id="quote">"Loading mood-based quote..."</p>
+            <div id="youtube-player"></div>
+            <canvas id="visualizer"></canvas>
+            <div id="game-section">
+                <p>Mini-Game Placeholder</p>
+            </div>
+            <div id="music-player">Custom Music Player</div>
+        </div>
+    </div>
 </body>
 </html>

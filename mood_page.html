@@ -67,12 +67,24 @@
             border: none;
             cursor: pointer;
         }
+        #youtube-background-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+            filter: blur(10px);
+            opacity: 0.5; /* Adjust opacity for background visibility */
+        }
     </style>
 </head>
 <body>
     <video class="background-video" autoplay loop muted>
         <source src="background-video.mp4" type="video/mp4">
     </video>
+    <iframe id="youtube-background-frame" allow="autoplay" allowfullscreen></iframe>
     <div class="container">
         <div class="mood-display">Current Mood: <span id="mood"></span></div>
         <div class="video-container">
@@ -92,7 +104,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const mood = urlParams.get('mood') || 'Neutral';
         document.getElementById("mood").textContent = mood.charAt(0).toUpperCase() + mood.slice(1);
-        
+
         const moodVideos = {
             happy: [
                 "https://www.youtube.com/embed/d-diB65scQU?enablejsapi=1&autoplay=1",
@@ -115,32 +127,36 @@
                 "https://www.youtube.com/embed/2Xc9gXyf2G4?enablejsapi=1&autoplay=1"
             ]
         };
-        
+
         let currentIndex = 0;
         let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
-        
+
         function loadVideo(index) {
-            document.getElementById("youtube-frame").src = currentPlaylist[index];
+            const videoUrl = currentPlaylist[index];
+            document.getElementById("youtube-frame").src = videoUrl;
+            document.getElementById("youtube-background-frame").src = videoUrl;
         }
-        
+
         document.getElementById("play").addEventListener("click", () => {
             document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            document.getElementById("youtube-background-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         });
-        
+
         document.getElementById("pause").addEventListener("click", () => {
             document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            document.getElementById("youtube-background-frame").contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
         });
-        
+
         document.getElementById("prev").addEventListener("click", () => {
             currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
             loadVideo(currentIndex);
         });
-        
+
         document.getElementById("next").addEventListener("click", () => {
             currentIndex = (currentIndex + 1) % currentPlaylist.length;
             loadVideo(currentIndex);
         });
-        
+
         loadVideo(currentIndex);
     </script>
 </body>

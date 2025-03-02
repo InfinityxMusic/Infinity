@@ -152,9 +152,12 @@
         const youtube = document.getElementById("youtube");
         const moodImage = document.getElementById("mood-image");
         const songDetails = document.getElementById("song-details");
+        const chatMessages = document.getElementById("chat-messages");
+        const chatInput = document.getElementById("chat-input");
+        const conversationHistory = [];
 
         const moodData = {
-            happy: { 
+            happy: {
                 videos: [
                     { url: "https://www.youtube.com/embed/d-diB65scQU?autoplay=1", title: "What a Wonderful World - Louis Armstrong" },
                     { url: "https://www.youtube.com/embed/5JxgDJvqGmM?autoplay=1", title: "Happy - Pharrell Williams" },
@@ -162,7 +165,7 @@
                 ],
                 img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg"
             },
-            sad: { 
+            sad: {
                 videos: [
                     { url: "https://www.youtube.com/embed/K5KAc5CoCuk?autoplay=1", title: "Someone Like You - Adele" },
                     { url: "https://www.youtube.com/embed/EYnf7vRjXJM?autoplay=1", title: "Fix You - Coldplay" },
@@ -184,12 +187,22 @@
             }
         };
 
-        if (moodData[mood]) {
-            const randomVideo = moodData[mood].videos[Math.floor(Math.random() * moodData[mood].videos.length)];
-            youtube.src = randomVideo.url;
-            songDetails.textContent = "Now Playing: " + randomVideo.title;
-            moodImage.src = moodData[mood].img;
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
         }
-    </script>
-</body>
-</html>
+
+        function sendMessage() {
+            const message = chatInput.value;
+            if (message.trim() !== "") {
+                displayMessage(message, "user");
+                chatInput.value = "";
+                getBotResponse(message);
+            }
+        }
+
+        function displayMessage(message, sender) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message", sender);
+            messageElement.textContent =

@@ -1,389 +1,131 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Mood Page</title>
-
-    <style>
-
-        body {
-
-            margin: 0;
-
-            font-family: Arial, sans-serif;
-
-            background-color: #000;
-
-            color: #fff;
-
-            overflow: hidden;
-
-        }
-
-        .video-background {
-
-            position: fixed;
-
-            top: 0;
-
-            left: 0;
-
-            width: 100%;
-
-            height: 100%;
-
-            overflow: hidden;
-
-            z-index: -1;
-
-        }
-
-        #bg-video {
-
-            width: 100%;
-
-            height: 100%;
-
-            object-fit: cover;
-
-            opacity: 0.3;
-
-        }
-
-        .container {
-
-            display: flex;
-
-            height: 100vh;
-
-            gap: 10px;
-
-        }
-
-        .section {
-
-            flex: 1;
-
-            padding: 20px;
-
-            text-align: center;
-
-            backdrop-filter: blur(10px);
-
-            background: rgba(31, 31, 31, 0.6);
-
-            border-radius: 10px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: flex-start;
-
-            align-items: center;
-
-        }
-
-        iframe, .chatbox, #mood-image {
-
-            box-shadow: 0 0 20px rgba(255, 255, 255, 1);
-
-            border-radius: 15px;
-
-        }
-
-        iframe {
-
-            width: 100%;
-
-            height: 315px;
-
-        }
-
-        .chatbox {
-
-            display: flex;
-
-            flex-direction: column;
-
-            height: 80%;
-
-            border-radius: 10px;
-
-            padding: 10px;
-
-            background: rgba(20, 20, 20, 0.8);
-
-            width: 90%;
-
-        }
-
-        .chat-input-container {
-
-            display: flex;
-
-            gap: 5px;
-
-        }
-
-        .chat-input {
-
-            flex: 1;
-
-            padding: 10px;
-
-            border: none;
-
-            border-radius: 5px;
-
-            background: #333;
-
-            color: white;
-
-        }
-
-        .send-button {
-
-            padding: 10px 15px;
-
-            border: none;
-
-            border-radius: 5px;
-
-            background: black;
-
-            color: white;
-
-            cursor: pointer;
-
-        }
-
-        .chat-messages {
-
-            flex-grow: 1;
-
-            overflow-y: auto;
-
-            padding: 5px;
-
-        }
-
-        .message {
-
-            padding: 8px;
-
-            margin: 5px 0;
-
-            border-radius: 5px;
-
-        }
-
-        .user {
-
-            background: #007bff;
-
-            text-align: right;
-
-        }
-
-        .bot {
-
-            background: #444;
-
-            text-align: left;
-
-        }
-
-        #chatbot {
-
-            order: 2;
-
-        }
-
-        #music {
-
-            order: 3;
-
-        }
-
-        #mood-display {
-
-            order: 1;
-
-        }
-
-        #mood-image {
-
-            width: 60%;
-
-            border-radius: 10px;
-
-        }
-
-        #song-details {
-
-            margin-top: 10px;
-
-            font-size: 14px;
-
-            color: #ccc;
-
-        }
-
-    </style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Experience</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .mood-display {
+            grid-column: span 2;
+            font-size: 1.5rem;
+            padding: 1rem;
+            background: rgba(31, 31, 31, 0.8);
+            border-radius: 10px;
+        }
+        .chatbot, .video-container {
+            background: rgba(31, 31, 31, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        }
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+        .music-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(31, 31, 31, 0.8);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .music-controls button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
-
 <body>
-
-    <div class="video-background">
-
-        <video autoplay muted loop id="bg-video">
-
-            <source src="https://videos.pexels.com/video-files/2018959/2018959-hd_1920_1080_30fps.mp4" type="video/mp4">
-
-        </video>
-
-    </div>
-
-    <div class="container">
-
-        <div class="section" id="mood-display">
-
-            <h2>Current Mood</h2>
-
-            <img id="mood-image" src="" alt="Mood Image">
-
-        </div>
-
-        <div class="section" id="chatbot">
-
-            <h2>Chatbot</h2>
-
-            <div class="chatbox">
-
-                <div class="chat-messages" id="chat-messages"></div>
-
-                <div class="chat-input-container">
-
-                    <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-
-                    <button class="send-button" onclick="sendMessage()">Send</button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="section" id="music">
-
-            <h2>Music Player</h2>
-
-            <iframe id="youtube" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-            <div id="song-details">Now Playing: </div>
-
-        </div>
-
-    </div>
-
-    <script>
-
-        const params = new URLSearchParams(window.location.search);
-
-        const mood = params.get("mood");
-
-        const youtube = document.getElementById("youtube");
-
-        const moodImage = document.getElementById("mood-image");
-
-        const songDetails = document.getElementById("song-details");
-
-
-
-        const moodData = {
-
-            happy: { 
-
-                videos: [
-
-                    { url: "https://www.youtube.com/embed/d-diB65scQU?autoplay=1", title: "What a Wonderful World - Louis Armstrong" },
-
-                    { url: "https://www.youtube.com/embed/5JxgDJvqGmM?autoplay=1", title: "Happy - Pharrell Williams" },
-
-                    { url: "https://www.youtube.com/embed/8Z3h4GzMvos?autoplay=1", title: "Can't Stop the Feeling - Justin Timberlake" }
-
-                ],
-
-                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boywith-cat-pfp-861ydl96x4r7rufw.jpg"
-
-            },
-
-            sad: { 
-
-                videos: [
-
-                    { url: "https://www.youtube.com/embed/K5KAc5CoCuk?autoplay=1", title: "Someone Like You - Adele" },
-
-                    { url: "https://www.youtube.com/embed/EYnf7vRjXJM?autoplay=1", title: "Fix You - Coldplay" },
-
-                    { url: "https://www.youtube.com/embed/7o6hJaj9JXo?autoplay=1", title: "Let Her Go - Passenger" }
-
-                ],
-
-                img: "https://wallpapers.com/images/hd/grunge-aesthetic-anime-boy-jpg-4qa7syyx5oyscgb5.jpg"
-
-            },
-
-            relaxed: {
-
-                videos: [
-
-                    { url: "https://www.youtube.com/embed/1ZYbU82GVz4?autoplay=1", title: "Weightless - Marconi Union" }
-
-                ],
-
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0cy7BVUT7GBT3Aeeul5u_jUFn-c10FPYyD6nISi_RUk6qIRC_7S4c1nSP_sFXa8mWdZw&usqp=CAU"
-
-            },
-
-            energetic: {
-
-                videos: [
-
-                    { url: "https://www.youtube.com/embed/fLexgOxsZu0?autoplay=1", title: "Uptown Funk - Mark Ronson ft. Bruno Mars" }
-
-                ],
-
-                img: "https://cdn.hero.page/pfp/27d65eee-28ba-4f45-a76a-eb6f88545ce2-anime-boy-with-mysterious-aura-unique-anime-boy-pfp-aesthetic-2.png"
-
-            }
-
-        };
-
-
-
-        if (moodData[mood]) {
-
-            const randomVideo = moodData[mood].videos[Math.floor(Math.random() * moodData[mood].videos.length)];
-
-            youtube.src = randomVideo.url;
-
-            songDetails.textContent = "Now Playing: " + randomVideo.title;
-
-            moodImage.src = moodData[mood].img;
-
-        }
-
-    </script>
-
+    <div class="container">
+        <div class="mood-display">Current Mood: <span id="mood"></span></div>
+        <div class="video-container">
+            <iframe id="youtube-frame" allow="autoplay" allowfullscreen></iframe>
+        </div>
+        <div class="chatbot">
+            <iframe src="chatbot_response.html"></iframe>
+        </div>
+    </div>
+    <div class="music-controls">
+        <button id="prev"><img src="prev.png" alt="Previous"></button>
+        <button id="play"><img src="play.png" alt="Play"></button>
+        <button id="pause"><img src="pause.png" alt="Pause"></button>
+        <button id="next"><img src="next.png" alt="Next"></button>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const mood = urlParams.get('mood') || 'Neutral';
+        document.getElementById("mood").textContent = mood.charAt(0).toUpperCase() + mood.slice(1);
+        
+        const moodVideos = {
+            happy: [
+                "https://www.youtube.com/embed/d-diB65scQU?enablejsapi=1",
+                "https://www.youtube.com/embed/l9PxOanFjxQ?enablejsapi=1",
+                "https://www.youtube.com/embed/fLexgOxsZu0?enablejsapi=1"
+            ],
+            sad: [
+                "https://www.youtube.com/embed/KHF9itPLUo4?enablejsapi=1",
+                "https://www.youtube.com/embed/RBumgq5yVrA?enablejsapi=1",
+                "https://www.youtube.com/embed/UAWcs5H-qgQ?enablejsapi=1"
+            ],
+            energetic: [
+                "https://www.youtube.com/embed/QK8mJJJvaes?enablejsapi=1",
+                "https://www.youtube.com/embed/3AtDnEC4zak?enablejsapi=1",
+                "https://www.youtube.com/embed/Zi_XLOBDo_Y?enablejsapi=1"
+            ],
+            relaxed: [
+                "https://www.youtube.com/embed/MkNeIUgNPQ8?enablejsapi=1",
+                "https://www.youtube.com/embed/1ZYbU82GVz4?enablejsapi=1",
+                "https://www.youtube.com/embed/2Xc9gXyf2G4?enablejsapi=1"
+            ]
+        };
+        
+        let currentIndex = 0;
+        let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
+        
+        function loadVideo(index) {
+            document.getElementById("youtube-frame").src = currentPlaylist[index];
+        }
+        
+        document.getElementById("play").addEventListener("click", () => {
+            document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        });
+        
+        document.getElementById("pause").addEventListener("click", () => {
+            document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        });
+        
+        document.getElementById("prev").addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+            loadVideo(currentIndex);
+        });
+        
+        document.getElementById("next").addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % currentPlaylist.length;
+            loadVideo(currentIndex);
+        });
+        
+        loadVideo(currentIndex);
+    </script>
 </body>
-
 </html>

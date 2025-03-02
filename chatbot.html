@@ -1,0 +1,93 @@
+const conversationHistory = []; // Initialize conversation history
+
+function getBotResponse(message) {
+    let response = "That's an interesting point. Let's explore that a bit.";
+    const lowerMessage = message.toLowerCase();
+
+    conversationHistory.push({ sender: "user", text: message }); // Add user message
+
+    if (conversationHistory.length > 5) { // Keep only last 5 messages
+        conversationHistory.shift();
+    }
+
+    if (lowerMessage.includes("hello") || lowerMessage.includes("hi") || lowerMessage.includes("hey")) {
+        const greetings = [
+            "Hey! How's your day shaping up?", "Hi there! What's been keeping you occupied?", "Hello! Ready for a musical adventure?",
+            "Greetings! How's the vibe today?", "Welcome! What can I help you discover?", "Good to see you! Anything exciting happen?",
+            "Hey! What's the latest in your world?", "Hi! What's on your mind today?", "Hello! Let's get into some good tunes.",
+            "Hey there! Ready to explore some new sounds?", "Hi friend! What's the buzz?", "Hello! How can I make your day better?",
+            "Hey! Let's get into the groove.", "Hi! What's your musical forecast?", "Hello! Ready to embark on a sonic journey?",
+            "Hey! Let's spark some conversation.", "Hi! What are your current thoughts?", "Hello! I'm all ears.",
+            "Hey! What's the scoop?", "Hi! Let's connect through the power of music."
+        ];
+        response = greetings[Math.floor(Math.random() * greetings.length)];
+    } else if (lowerMessage.includes("mood")) {
+        const moodResponses = [
+            `You're in a ${mood} mood. I hope the music is hitting the right spot. What kind of music really resonates with you in this state?`,
+            `Ah, a ${mood} mood. Music can really amplify or soothe that. How are you feeling the music right now?`,
+            `Feeling ${mood}, huh? I've got some tunes lined up. What's your go-to method for shifting your mood?`,
+            `A ${mood} day calls for a specific soundscape. What kind of atmosphere are you trying to create with your music?`,
+            `I see you're feeling ${mood}. Any particular genre or artist that seems to match your vibe right now?`,
+            `A ${mood} mood can be quite the experience. How do you find music helps you navigate these feelings?`,
+            `So, you're ${mood}. Do you find that certain songs make you feel more or less of it?`,
+            `${mood} can be quite powerful. What kind of musical journey are you looking to embark on today?`,
+            `I've picked up on your ${mood}. Let's dive into some music that might just speak to you on a deeper level.`,
+            `Experiencing ${mood}? What kind of musical escape are you craving at the moment?`,
+            `How does being ${mood} influence your taste in music at this very moment?`, `Do you have a personal playlist for when you're feeling ${mood}?`,
+            `When you're ${mood}, do you tend to gravitate towards lyrics or instrumentals?`, `Is there a specific memory or feeling tied to your current ${mood}?`,
+            `What's your favorite way to express the emotions of your ${mood} mood?`, `Do you find that music helps you process the complexities of your ${mood}?`,
+            `Do you ever notice how your ${mood} changes your perception of the same song?`, `How do you think music can help you move through your current ${mood}?`,
+            `What's the most unexpected song you'd reach for in your ${mood} state?`, `Do you find your ${mood} fluctuates throughout the day, and if so, how does that affect your music choices?`
+        ];
+        response = moodResponses[Math.floor(Math.random() * moodResponses.length)];
+    } else if (lowerMessage.includes("music") || lowerMessage.includes("song")) {
+        const musicResponses = [
+            "Music is a powerful way to express yourself, isn't it? Do you have any artists or genres that really speak to you?",
+            "What do you think makes a song truly connect with you on a deeper level?",
+            "How does this current song make you feel, if you don't mind me asking?",
+            "Do you believe music has the ability to completely transform someone's mood?",
+            "What's your honest take on the track playing right now? Does it fit the vibe you're going for?",
+            "Got a go-to song for when you need a quick mood boost?",
+            "What's the story behind your all-time favorite song? I'm always curious about those.",
+            "How do you usually stumble upon new music? Any secret spots?",
+            "Do you lean more towards albums or singles these days?",
+            "What's a musical memory that always brings a smile to your face?",
+            "What's the appeal of your favorite genre? What makes it stand out?", "How do you feel about the energy of live music performances?",
+            "Do you play any instruments yourself? Or have you ever thought about it?", "What's the latest song you added to your playlist?",
+            "How often do you find yourself tuning into music throughout the day?", "What's the most surprising thing you've learned about music?",
+            "Do you think music is a universal language, or are there cultural nuances that change its meaning?",
+            "How does music help you connect with memories from your past?", "What's the most emotionally charged song you've ever listened to?",
+            "What kind of music helps you focus when you're working or studying? Any specific playlists?"
+        ];
+        response = musicResponses[Math.floor(Math.random() * musicResponses.length)];
+    } else if (lowerMessage.includes("how are you")) {
+        const howAreYouResponses = [
+            "As a bot, I don't experience feelings, but I'm here to assist you. What kind of musical journey are you hoping for?",
+            "I'm running smoothly, ready to help you find the perfect soundtrack. What kind of music makes you feel good?",
+            "I'm here, ready to help you navigate your music and mood. Got any plans for the day?",
+            "I'm doing well, thank you for asking. What's been on your musical radar lately?",
+            "I'm always ready to assist, whatever you need. What kind of musical experience are you in the mood for?",
+            "I'm here to help you navigate your musical journey. What can I do to make your day better?",
+            "I'm doing my best to serve you with the right tunes. What kind of music are you interested in exploring?",
+            "I'm continuously learning and improving to enhance your experience. How can I make your musical journey more enjoyable?",
+            "I'm here to help you curate the perfect soundtrack for your day. What kind of vibe are you going for?",
+            "I'm ready to help you discover new music and connect with your emotions. What's your plan for today?",
+            "I'm operating at peak performance, ready to take your requests.", "I'm always ready to help you find that perfect song.",
+            "I'm here to help you get the most out of your music experience.", "I'm functioning perfectly, thank you for asking.",
+            "I'm doing well, ready to help you find the right tune.", "I'm here to help you find your groove.",
+            "I'm always ready to help you explore new musical horizons.", "I'm doing great, ready to assist you in any way.",
+            "I'm here, ready to help you discover your next favorite song.", "I'm always ready to help you find the perfect musical escape."
+        ];
+        response = howAreYouResponses[Math.floor(Math.random() * howAreYouResponses.length)];
+    } else if (conversationHistory.length > 1) { // Contextual responses
+        const previousMessage = conversationHistory[conversationHistory.length - 2].text.toLowerCase();
+
+        if (previousMessage.includes("feeling a bit down")) {
+            const downResponses = [
+                "I understand. Would you prefer some calming music, or would you like to talk about what's on your mind?",
+                "Talking often helps, doesn't it? What's been occupying your thoughts lately?",
+                "Music can be a great outlet for emotions. Would you like me to switch up the playlist to something different?",
+                "I'm here if you need to vent. What kind of support are you looking for right now?",
+                "It's okay to feel down. Let's find some music that speaks to what you're going through.",
+                "Have you ever tried listening to purely instrumental music when you're feeling this way?",
+                "Sometimes, a change of scenery can do wonders. Would you like me to find some music that transports you somewhere else?",

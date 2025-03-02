@@ -13,70 +13,53 @@
             color: white;
             font-family: Arial, sans-serif;
             overflow: hidden;
+            display: flex;
         }
         .container {
-            position: relative;
+            display: flex;
             width: 100vw;
             height: 100vh;
         }
-        #background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            transition: background 0.5s ease;
-        }
-        .blur-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        #left-section {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 80%;
-            max-width: 600px;
         }
-        #mood-title {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        #quote {
-            font-style: italic;
-            margin: 10px 0;
+        #right-section {
+            width: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         #youtube-player {
-            margin: 20px 0;
             width: 100%;
-            height: 315px;
+            height: 200px;
         }
-        #visualizer {
-            width: 100%;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.1);
+        #music-name, #quote, #mood-title {
+            text-align: center;
+            margin: 10px 0;
         }
         #game-section {
-            margin: 20px 0;
-            padding: 10px;
+            width: 80%;
+            height: 80%;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-        #music-player {
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
         }
     </style>
     <script>
         let moods = {
-            happy: { video: "d-diB65scQU", bg: "happy.jpg", quote: "Happiness is a journey, not a destination." },
-            sad: { video: "sIaT8Jl2zpI", bg: "sad.jpg", quote: "Tears come from the heart, not the brain." },
-            energetic: { video: "3GwjfUFyY6M", bg: "energetic.jpg", quote: "Energy and persistence conquer all things." },
-            relaxed: { video: "5qap5aO4i9A", bg: "relaxed.jpg", quote: "Relax, refresh, recharge." }
+            happy: { video: "d-diB65scQU", bg: "happy.jpg", quote: "Happiness is a journey, not a destination.", song: "Happy Vibes", playlist: ["d-diB65scQU", "ZbZSe6N_BXs", "y6Sxv-sUYtM"] },
+            sad: { video: "sIaT8Jl2zpI", bg: "sad.jpg", quote: "Tears come from the heart, not the brain.", song: "Sad Melodies", playlist: ["sIaT8Jl2zpI", "RgKAFK5djSk", "kJQP7kiw5Fk"] },
+            energetic: { video: "3GwjfUFyY6M", bg: "energetic.jpg", quote: "Energy and persistence conquer all things.", song: "Power Boost", playlist: ["3GwjfUFyY6M", "2vjPBrBU-TM", "hHUbLv4ThOo"] },
+            relaxed: { video: "5qap5aO4i9A", bg: "relaxed.jpg", quote: "Relax, refresh, recharge.", song: "Chill Tunes", playlist: ["5qap5aO4i9A", "DWcJFNfaw9c", "lTRiuFIWV54"] }
         };
         
         function loadMood() {
@@ -85,10 +68,12 @@
             if (mood && moods[mood]) {
                 document.getElementById("mood-name").innerText = mood.charAt(0).toUpperCase() + mood.slice(1);
                 document.getElementById("quote").innerText = moods[mood].quote;
+                document.getElementById("music-name").innerText = moods[mood].song;
                 document.getElementById("background").style.backgroundImage = `url(${moods[mood].bg})`;
                 
                 let playerDiv = document.getElementById("youtube-player");
-                playerDiv.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${moods[mood].video}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                let playlist = moods[mood].playlist.join(",");
+                playerDiv.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/?playlist=${playlist}&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
             }
         }
         window.onload = loadMood;
@@ -96,16 +81,16 @@
 </head>
 <body>
     <div class="container">
-        <div id="background"></div>
-        <div class="blur-box">
-            <h1 id="mood-title">Your Mood: <span id="mood-name"></span></h1>
-            <p id="quote">"Loading mood-based quote..."</p>
+        <div id="left-section">
             <div id="youtube-player"></div>
-            <canvas id="visualizer"></canvas>
+            <h3 id="music-name">Loading Music...</h3>
+            <p id="quote">"Loading mood-based quote..."</p>
+            <h2 id="mood-title">Your Mood: <span id="mood-name"></span></h2>
+        </div>
+        <div id="right-section">
             <div id="game-section">
                 <p>Mini-Game Placeholder</p>
             </div>
-            <div id="music-player">Custom Music Player</div>
         </div>
     </div>
 </body>

@@ -7,9 +7,9 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
             text-align: center;
             overflow: hidden;
         }
@@ -20,8 +20,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            filter: blur(10px);
-            transform: scaleX(-1);
+            filter: blur(10px) scaleX(-1);
             object-fit: cover;
             opacity: 0.5;
             pointer-events: none;
@@ -31,40 +30,56 @@
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto 1fr;
             height: 100vh;
-            gap: 1rem;
-            padding: 1rem;
+            gap: 2rem;
+            padding: 2rem;
             position: relative;
             z-index: 1;
         }
         .mood-display {
             grid-column: span 2;
-            font-size: 1.5rem;
-            padding: 1rem;
-            background: rgba(31, 31, 31, 0.8);
-            border-radius: 10px;
+            font-size: 2rem;
+            padding: 1.5rem;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
         .mood-details {
-            background: rgba(31, 31, 31, 0.8);
-            padding: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-            text-align: left; /* Align text to the left */
+            background: rgba(30, 30, 30, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            overflow-y: auto;
+            max-height: 50vh;
+        }
+        .chatbot {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
         .music-controls {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(31, 31, 31, 0.8);
+            bottom: 4rem; /* Ensure bottom is set */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 30, 30, 0.8);
             padding: 1rem;
+            border-radius: 20px;
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2; /* Ensure it's above other elements */
         }
         .music-controls button {
             background: transparent;
             border: none;
             cursor: pointer;
+        }
+        .music-controls img {
+            width: 30px;
+            filter: brightness(1.2);
         }
     </style>
 </head>
@@ -159,14 +174,15 @@
         const backgroundCanvas = document.getElementById("background-canvas");
         const ctx = backgroundCanvas.getContext("2d");
         const moodDetailsDiv = document.getElementById("mood-details");
+        let video = document.createElement('video');
+
+        video.crossOrigin = "anonymous";
+        video.style.display = 'none';
+        document.body.appendChild(video);
 
         function loadVideo(index) {
             const videoUrl = currentPlaylist[index];
-            const video = document.createElement('video');
             video.src = videoUrl;
-            video.crossOrigin = "anonymous";
-            video.style.display = 'none';
-            document.body.appendChild(video);
 
             video.onloadedmetadata = function() {
                 function drawBackground() {
@@ -178,30 +194,9 @@
                 backgroundCanvas.width = window.innerWidth;
                 backgroundCanvas.height = window.innerHeight;
                 drawBackground();
+                video.play();
             };
 
             const currentMoodDetails = moodDetails[mood] || moodDetails['neutral'];
             moodDetailsDiv.innerHTML = `
-                <p><strong>Details:</strong> ${currentMoodDetails.details}</p>
-                <p><strong>Motivating Lines:</strong></p>
-                <ul>
-                    ${currentMoodDetails.motivatingLines.map(line => `<li>${line}</li>`).join('')}
-                </ul>
-            `;
-
-        }
-
-        document.getElementById("prev").addEventListener("click", () => {
-            currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
-            loadVideo(currentIndex);
-        });
-
-        document.getElementById("next").addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % currentPlaylist.length;
-            loadVideo(currentIndex);
-        });
-
-        loadVideo(currentIndex);
-    </script>
-</body>
-</html>
+                <p>

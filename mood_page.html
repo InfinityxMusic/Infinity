@@ -60,7 +60,7 @@
         }
         .music-controls {
             position: fixed;
-            bottom: 4rem; /* Ensure bottom is set */
+            bottom: 4rem;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(30, 30, 30, 0.8);
@@ -70,7 +70,7 @@
             justify-content: center;
             gap: 1.5rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            z-index: 2; /* Ensure it's above other elements */
+            z-index: 2;
         }
         .music-controls button {
             background: transparent;
@@ -105,24 +105,24 @@
 
         const moodVideos = {
             happy: [
-                "https://www.youtube.com/embed/d-diB65scQU?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/l9PxOanFjxQ?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/fLexgOxsZu0?enablejsapi=1&autoplay=1"
+                "https://www.youtube.com/embed/lYyW_Q-V8oE?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/jHPOzDSlwiE?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/j9jBDgZidu8?autoplay=1&mute=1"
             ],
             sad: [
-                "https://www.youtube.com/embed/KHF9itPLUo4?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/RBumgq5yVrA?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/UAWcs5H-qgQ?enablejsapi=1&autoplay=1"
+                "https://www.youtube.com/embed/DWcJFNVi9c8?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/f0pd26Ybtb4?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/7-zL858Hj7Y?autoplay=1&mute=1"
             ],
             energetic: [
-                "https://www.youtube.com/embed/QK8mJJJvaes?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/3AtDnEC4zak?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/Zi_XLOBDo_Y?enablejsapi=1&autoplay=1"
+                "https://www.youtube.com/embed/EHfxqXcmBog?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/j-jsc2qD0qI?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/YqeW9_5kURI?autoplay=1&mute=1"
             ],
             relaxed: [
-                "https://www.youtube.com/embed/MkNeIUgNPQ8?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/1ZYbU82GVz4?enablejsapi=1&autoplay=1",
-                "https://www.youtube.com/embed/2Xc9gXyf2G4?enablejsapi=1&autoplay=1"
+                "https://www.youtube.com/embed/JzSUczu501Y?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/rK2qU_R65u8?autoplay=1&mute=1",
+                "https://www.youtube.com/embed/H1QvQyXUjX4?autoplay=1&mute=1"
             ]
         };
 
@@ -188,15 +188,3 @@
                 function drawBackground() {
                     ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
                     ctx.drawImage(video, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
-                    requestAnimationFrame(drawBackground);
-                }
-
-                backgroundCanvas.width = window.innerWidth;
-                backgroundCanvas.height = window.innerHeight;
-                drawBackground();
-                video.play();
-            };
-
-            const currentMoodDetails = moodDetails[mood] || moodDetails['neutral'];
-            moodDetailsDiv.innerHTML = `
-                <p>

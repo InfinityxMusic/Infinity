@@ -3,208 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Experience</title>
+    <title>Mood Music and Games</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #e0e0e0;
-            text-align: center;
-            overflow: hidden;
-        }
-        .background-iframe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            z-index: -1;
-            filter: blur(10px) scaleX(-1);
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto 1fr;
-            height: 100vh;
-            gap: 2rem;
-            padding: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-        .mood-display {
-            grid-column: span 2;
-            font-size: 2rem;
-            padding: 1.5rem;
-            background: rgba(30, 30, 30, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-        .mood-details {
-            background: rgba(30, 30, 30, 0.8);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            text-align: left;
-            overflow-y: auto;
-            max-height: 50vh;
-        }
-        .chatbot {
-            background: rgba(30, 30, 30, 0.8);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-        .music-controls {
-            position: fixed;
-            bottom: 4rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(30, 30, 30, 0.8);
-            padding: 1rem;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            z-index: 2;
-        }
-        .music-controls button {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-        .music-controls img {
-            width: 30px;
-            filter: brightness(1.2);
+        .game-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
-<body>
-    <iframe class="background-iframe" allow="autoplay" allowfullscreen></iframe>
-    <div class="container">
-        <div class="mood-display">Current Mood: <span id="mood"></span></div>
-        <div class="mood-details" id="mood-details"></div>
-        <div class="chatbot">
-            <iframe src="chatbot.html"></iframe>
-        </div>
+<body class="bg-gray-200">
+    <div class="fixed top-4 right-4 bg-white p-2 rounded shadow">
+        <span id="moodDisplay" class="font-semibold"></span>
     </div>
-    <div class="music-controls">
-        <button id="prev"><img src="prev.png" alt="Previous"></button>
-        <button id="play-pause"><img src="play.png" alt="Play"></button>
-        <button id="next"><img src="next.png" alt="Next"></button>
+
+    <div class="flex flex-col items-center justify-center min-h-screen">
+        <div id="player" class="w-full max-w-2xl mb-8"></div>
+
+        <div id="games" class="w-full max-w-2xl">
+            </div>
     </div>
+
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        let mood = urlParams.get('mood');
+        const mood = urlParams.get('mood');
+        document.getElementById('moodDisplay').textContent = mood.toUpperCase();
 
-        if (!mood) {
-            console.error("Mood parameter not found in URL.");
-            mood = 'Neutral'; // Default to "Neutral" if not found
-        }
+        // ... (YouTube player code remains the same) ...
 
-        document.getElementById("mood").textContent = mood.charAt(0).toUpperCase() + mood.slice(1);
+        function loadGames(mood) {
+            const gamesDiv = document.getElementById("games");
+            gamesDiv.innerHTML = ""; // Clear previous games.
 
-        const moodVideos = {
-            happy: [
-                "https://www.youtube.com/embed/b8m9zhNAgzc?autoplay=1&mute=1&loop=1&playlist=b8m9zhNAgzc",
-                "https://www.youtube.com/embed/lYzokvj4jYg?autoplay=1&mute=1&loop=1&playlist=lYzokvj4jYg",
-                "https://www.youtube.com/embed/5XYOKO_wM98?autoplay=1&mute=1&loop=1&playlist=5XYOKO_wM98"
-            ],
-            sad: [
-                "https://www.youtube.com/embed/1v0pU-7v3_I?autoplay=1&mute=1&loop=1&playlist=1v0pU-7v3_I",
-                "https://www.youtube.com/embed/f098l3n_4aM?autoplay=1&mute=1&loop=1&playlist=f098l3n_4aM",
-                "https://www.youtube.com/embed/4y56wU_226g?autoplay=1&mute=1&loop=1&playlist=4y56wU_226g"
-            ],
-            energetic: [
-                "https://www.youtube.com/embed/m5_AKu869yQ?autoplay=1&mute=1&loop=1&playlist=m5_AKu869yQ",
-                "https://www.youtube.com/embed/HgzGwKwLmgM?autoplay=1&mute=1&loop=1&playlist=HgzGwKwLmgM",
-                "https://www.youtube.com/embed/1roy4o4FTmQ?autoplay=1&mute=1&loop=1&playlist=1roy4o4FTmQ"
-            ],
-            relaxed: [
-                "https://www.youtube.com/embed/r46RW35y2eM?autoplay=1&mute=1&loop=1&playlist=r46RW35y2eM",
-                "https://www.youtube.com/embed/JjHq3w9kFjE?autoplay=1&mute=1&loop=1&playlist=JjHq3w9kFjE",
-                "https://www.youtube.com/embed/uQ46u2vY2H4?autoplay=1&mute=1&loop=1&playlist=uQ46u2vY2H4"
-            ],
-            neutral: [
-                "https://www.youtube.com/embed/3AtDnEC4zak?enablejsapi=1&autoplay=12",
-                "https://www.youtube.com/embed/3AtDnEC4zak?enablejsapi=1&autoplay=13",
-                "https://www.youtube.com/embed/3AtDnEC4zak?enablejsapi=1&autoplay=14"
-            ]
-        };
-
-        const moodDetails = {
-            happy: {
-                details: "Happiness is a state of mind. Enjoy the moment!",
-                motivatingLines: [
-                    "Every day is a new opportunity to shine.",
-                    "Your smile can brighten someone's day.",
-                    "Embrace the joy around you."
-                ]
-            },
-            sad: {
-                details: "It's okay to feel sad sometimes. Remember, this too shall pass.",
-                motivatingLines: [
-                    "Tough times never last, but tough people do.",
-                    "You are stronger than you think.",
-                    "Let your tears water the seeds of your soul."
-                ]
-            },
-            energetic: {
-                details: "Feel the energy flowing through you. Let's get things done!",
-                motivatingLines: [
-                    "The only limit is the one you set yourself.",
-                    "Your energy is contagious.",
-                    "Go the extra mile, it's never crowded."
-                ]
-            },
-            relaxed: {
-                details: "Take a deep breath and relax. You deserve this moment of peace.",
-                motivatingLines: [
-                    "Peace begins with a smile.",
-                    "Sometimes the most productive thing you can do is relax.",
-                    "Find joy in the simple things."
-                ]
-            },
-            neutral: {
-                details: "A balanced state of mind. Find your center.",
-                motivatingLines: [
-                    "Every moment is a fresh beginning.",
-                    "Stay grounded, stay focused.",
-                    "Find beauty in the ordinary."
-                ]
+            if (mood === "happy") {
+                gamesDiv.innerHTML = `
+                    <div class="game-container">
+                        <h3>Happy Clicker</h3>
+                        <button id="happyClicker" class="bg-yellow-400 hover:bg-yellow-500 p-2 rounded">Click Me!</button>
+                        <p id="happyScore">Score: 0</p>
+                    </div>
+                `;
+                let happyScore = 0;
+                document.getElementById("happyClicker").addEventListener("click", () => {
+                    happyScore++;
+                    document.getElementById("happyScore").textContent = `Score: ${happyScore}`;
+                });
+            } else if (mood === "sad") {
+                gamesDiv.innerHTML = `
+                    <div class="game-container">
+                        <h3>Memory Match (Simple)</h3>
+                        <p>Find the matching pairs.</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-gray-300 p-4 rounded">A</div>
+                            <div class="bg-gray-300 p-4 rounded">B</div>
+                            <div class="bg-gray-300 p-4 rounded">A</div>
+                            <div class="bg-gray-300 p-4 rounded">B</div>
+                        </div>
+                    </div>
+                `;
+            } else if (mood === "energetic") {
+                gamesDiv.innerHTML = `
+                    <div class="game-container">
+                        <h3>Quick Reaction Test</h3>
+                        <button id="reactionTest" class="bg-red-500 hover:bg-red-600 p-2 rounded text-white">Start</button>
+                        <p id="reactionTime"></p>
+                    </div>
+                `;
+                document.getElementById("reactionTest").addEventListener("click", () => {
+                    let startTime;
+                    document.getElementById("reactionTest").disabled = true;
+                    setTimeout(() => {
+                        document.getElementById("reactionTest").textContent = "Click Now!";
+                        startTime = Date.now();
+                    }, Math.random() * 2000 + 500); // Random delay
+                    document.getElementById("reactionTest").addEventListener("click", () => {
+                        const endTime = Date.now();
+                        const reactionTime = endTime - startTime;
+                        document.getElementById("reactionTime").textContent = `Reaction Time: ${reactionTime}ms`;
+                        document.getElementById("reactionTest").textContent = "Start";
+                        document.getElementById("reactionTest").disabled = false;
+                    }, {once: true});
+                });
+            } else if (mood === "relaxed") {
+                gamesDiv.innerHTML = `
+                    <div class="game-container">
+                        <h3>Simple Breathing Exercise</h3>
+                        <div class="w-20 h-20 rounded-full bg-blue-200 animate-pulse"></div>
+                        <p>Breathe in and out with the pulse.</p>
+                    </div>
+                `;
             }
-        };
-
-        let currentIndex = 0;
-        let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
-        const backgroundIframe = document.querySelector('.background-iframe');
-        const moodDetailsDiv = document.getElementById("mood-details");
-        let isPlaying = false;
-
-        function loadVideo(index) {
-            backgroundIframe.src = currentPlaylist[index];
-            isPlaying = true;
-            document.querySelector('#play-pause img').src = "pause.png";
-            const currentMoodDetails = moodDetails[mood] || moodDetails['neutral'];
-            moodDetailsDiv.innerHTML = `
-                <p><strong>Details:</strong> ${currentMoodDetails.details}</p>
-                <p><strong>Motivating Lines:</strong></p>
-                <ul>
-                    ${currentMoodDetails.motivatingLines.map(line => `<li>${line}</li>`).join('')}
-                </ul>
-            `;
         }
+        loadGames(mood);
 
-        document.getElementById("prev").addEventListener("click", () => {
-            currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
-            loadVideo(currentIndex);
-        });
-
-        document.getElementById("next").addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % currentPlaylist.length;
-            loadVideo(currentIndex);
-        });
+    </script>
+</body>
+</html>

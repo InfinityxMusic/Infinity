@@ -20,8 +20,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: blur(10px);
+            filter: blur(10px) scaleX(-1); /* Mirror and blur */
             z-index: -1;
+            transform: scale(1.1); /* Stretch */
+            opacity: 0.5; /* Opacity for background effect */
         }
         .container {
             display: grid;
@@ -67,24 +69,11 @@
             border: none;
             cursor: pointer;
         }
-        #youtube-background-frame {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            pointer-events: none;
-            filter: blur(10px) scaleX(-1);
-            opacity: 0.5;
-        }
+
     </style>
 </head>
 <body>
-    <video class="background-video" autoplay loop muted>
-        <source src="background-video.mp4" type="video/mp4">
-    </video>
-    <iframe id="youtube-background-frame" allow="autoplay" allowfullscreen></iframe>
+    <iframe class="background-video" allow="autoplay" allowfullscreen muted></iframe>
     <div class="container">
         <div class="mood-display">Current Mood: <span id="mood"></span></div>
         <div class="video-container">
@@ -134,17 +123,15 @@
         function loadVideo(index) {
             const videoUrl = currentPlaylist[index];
             document.getElementById("youtube-frame").src = videoUrl;
-            document.getElementById("youtube-background-frame").src = videoUrl;
+            document.querySelector(".background-video").src = videoUrl;
         }
 
         document.getElementById("play").addEventListener("click", () => {
             document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            document.getElementById("youtube-background-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         });
 
         document.getElementById("pause").addEventListener("click", () => {
             document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            document.getElementById("youtube-background-frame").contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
         });
 
         document.getElementById("prev").addEventListener("click", () => {

@@ -13,15 +13,15 @@
             text-align: center;
             overflow: hidden;
         }
-        #background-canvas {
+        .background-video {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            filter: blur(10px) scaleX(-1);
             object-fit: cover;
+            filter: blur(10px) scaleX(-1);
+            z-index: -1;
             opacity: 0.5;
             pointer-events: none;
         }
@@ -84,7 +84,7 @@
     </style>
 </head>
 <body>
-    <canvas id="background-canvas"></canvas>
+    <video class="background-video" autoplay loop muted></video>
     <div class="container">
         <div class="mood-display">Current Mood: <span id="mood"></span></div>
         <div class="mood-details" id="mood-details"></div>
@@ -171,20 +171,32 @@
 
         let currentIndex = 0;
         let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
-        const backgroundCanvas = document.getElementById("background-canvas");
-        const ctx = backgroundCanvas.getContext("2d");
+        const backgroundVideo = document.querySelector('.background-video');
         const moodDetailsDiv = document.getElementById("mood-details");
-        let video = document.createElement('video');
-
-        video.crossOrigin = "anonymous";
-        video.style.display = 'none';
-        document.body.appendChild(video);
 
         function loadVideo(index) {
-            const videoUrl = currentPlaylist[index];
-            video.src = videoUrl;
+            backgroundVideo.src = currentPlaylist[index];
+            backgroundVideo.load();
+            backgroundVideo.play();
 
-            video.onloadedmetadata = function() {
-                function drawBackground() {
-                    ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
-                    ctx.drawImage(video, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+            const currentMoodDetails = moodDetails[mood] || moodDetails['neutral'];
+            moodDetailsDiv.innerHTML = `
+                <p><strong>Details:</strong> ${currentMoodDetails.details}</p>
+                <p><strong>Motivating Lines:</strong></p>
+                <ul>
+                    ${currentMoodDetails.motivatingLines.map(line => `<li>${line}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        document.getElementById("prev").addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+            loadVideo(currentIndex);
+        });
+
+        document.getElementById("next").addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % currentPlaylist.length;
+            loadVideo(currentIndex);
+        });
+
+        loadVideo(currentIndex);

@@ -13,16 +13,16 @@
             text-align: center;
             overflow: hidden;
         }
-        .background-video {
+        #background-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            filter: blur(10px) scaleX(-1);
             z-index: -1;
-            transform: scale(1.1);
+            filter: blur(10px);
+            transform: scaleX(-1);
+            object-fit: cover;
             opacity: 0.5;
             pointer-events: none;
         }
@@ -73,7 +73,7 @@
     </style>
 </head>
 <body>
-    <video class="background-video" autoplay loop muted></video>
+    <canvas id="background-canvas"></canvas>
     <div class="container">
         <div class="mood-display">Current Mood: <span id="mood"></span></div>
         <div class="video-container">
@@ -119,22 +119,32 @@
 
         let currentIndex = 0;
         let currentPlaylist = moodVideos[mood] || moodVideos['neutral'];
+        const youtubeFrame = document.getElementById("youtube-frame");
+        const backgroundCanvas = document.getElementById("background-canvas");
+        const ctx = backgroundCanvas.getContext("2d");
 
         function loadVideo(index) {
-            const videoUrl = currentPlaylist[index];
-            document.getElementById("youtube-frame").src = videoUrl;
-            document.querySelector(".background-video").src = videoUrl;
-
-            //set the background video to play.
-            document.querySelector(".background-video").play();
+            youtubeFrame.src = currentPlaylist[index];
         }
 
+        youtubeFrame.onload = function() {
+            function drawBackground() {
+                ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+                ctx.drawImage(youtubeFrame, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+                requestAnimationFrame(drawBackground);
+            }
+
+            backgroundCanvas.width = window.innerWidth;
+            backgroundCanvas.height = window.innerHeight;
+            drawBackground();
+        };
+
         document.getElementById("play").addEventListener("click", () => {
-            document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            youtubeFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         });
 
         document.getElementById("pause").addEventListener("click", () => {
-            document.getElementById("youtube-frame").contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            youtubeFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
         });
 
         document.getElementById("prev").addEventListener("click", () => {

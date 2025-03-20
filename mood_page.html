@@ -37,37 +37,23 @@
             justify-content: space-around;
             align-items: center;
             padding: 20px;
-            position: relative; /* Required for the background video */
-            overflow: hidden; /* Ensures the video stays within the section */
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
         }
-        #left-background-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1; /* Places the video behind the content */
-            opacity: 0.5; /* Adjust opacity as needed */
+        #right-section {
+            width: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        #left-background-video::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black tint */
-            z-index: 1; /* Places the overlay above the video */
-        }
-        #youtube-player {
-            width: 100%;
-            height: 250px;
-            min-height: 250px;
-            background: black;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Light soft border */
-            border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
-        }
+       #youtube-player {
+        width: 100%;
+        height: 250px;
+        min-height: 250px;
+        background: black;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Light soft border */
+        border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
+    }
         #music-name, #quote, #mood-title {
             text-align: center;
             margin: 10px 0;
@@ -75,7 +61,7 @@
         #game-section {
             width: 80%;
             height: 80%;
-            background: rgba(0, 0, 0, 0.5);
+            background:rgba(0, 0, 0, 0.5);;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -98,20 +84,11 @@
             left: 0;
             width: 100%;
             height: 100%;
+         background:rgba(0, 0, 0, 0.5);
             object-fit: cover;
             z-index: -1;
             opacity: 0.5;
             border-radius: 10px;
-        }
-        #playlist-background-video::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black tint */
-            z-index: 1; /* Places the overlay above the video */
         }
         .controls {
             display: flex;
@@ -119,7 +96,7 @@
         }
         .controls-container {
             width: 90%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5);;
             backdrop-filter: blur(10px);
             padding: 10px;
             border-radius: 10px;
@@ -136,19 +113,10 @@
             left: 0;
             width: 100%;
             height: 100%;
+            background:rgba(0, 0, 0, 0.5);
             object-fit: cover;
             z-index: -1;
             opacity: 0.5;
-        }
-        #controls-background-video::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black tint */
-            z-index: 1; /* Places the overlay above the video */
         }
         .controls button {
             padding: 0;
@@ -297,20 +265,17 @@
                 document.getElementById("background").style.backgroundImage = `url(${moods[mood].bg})`;
                 loadVideo(0);
                 updateSongList();
-                setBackgroundVideo(moods[mood].playlistBg);
+                setPlaylistBackground(moods[mood].playlistBg);
+                setControlsBackground(moods[mood].playlistBg);
             }
         }
 
-        function setBackgroundVideo(videoUrl) {
-            // Set background video for left section
-            let leftBgDiv = document.getElementById("left-background-video");
-            leftBgDiv.innerHTML = `<video autoplay muted loop id="bg-video"><source src="${videoUrl}" type="video/mp4"></video>`;
-
-            // Set background video for playlist section
+        function setPlaylistBackground(videoUrl) {
             let playlistBgDiv = document.getElementById("playlist-background-video");
             playlistBgDiv.innerHTML = `<video autoplay muted loop id="bg-video"><source src="${videoUrl}" type="video/mp4"></video>`;
+        }
 
-            // Set background video for controls container
+        function setControlsBackground(videoUrl) {
             let controlsBgDiv = document.getElementById("controls-background-video");
             controlsBgDiv.innerHTML = `<video autoplay muted loop id="bg-video"><source src="${videoUrl}" type="video/mp4"></video>`;
         }
@@ -369,7 +334,6 @@
     <div id="background"></div>
     <div class="container">
         <div id="left-section">
-            <div id="left-background-video"></div> <!-- Background video for left section -->
             <h2>Infinity Music Player</h2>
             <div id="youtube-player"></div>
             <h3 id="music-name">Loading Music...</h3>

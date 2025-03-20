@@ -61,9 +61,13 @@
             height: 80%;
             background: rgba(255, 255, 255, 0.1);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
             border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
         }
         .controls {
             display: flex;
@@ -71,14 +75,14 @@
         }
         .controls-container {
             width: 90%;
-            background: rgba(255, 255, 255, 0.1); /* White with 10% opacity */
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 10px;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.05); /* Very faint border */
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .controls button {
             padding: 0;
@@ -97,53 +101,94 @@
             height: 100%;
             border-radius: 50%;
         }
+        .song-list {
+            width: 100%;
+            text-align: left;
+        }
+        .song-item {
+            margin: 10px 0;
+            font-size: 14px;
+        }
     </style>
     <script>
         let player;
+        let isPlaying = false;
         let moods = {
-            happy: { 
-                video: "d-diB65scQU", 
-                bg: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D", 
-                quote: "Happiness is a journey, not a destination.", 
-                song: "Happy Vibes", 
+            happy: {
+                video: "d-diB65scQU",
+                bg: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D",
+                quote: "Happiness is a journey, not a destination.",
+                song: "Happy Vibes",
                 playlist: [
-                    "d-diB65scQU", "ZbZSe6N_BXs", "y6Sxv-sUYtM", "CevxZvSJLk8", "OPf0YbXqDm0", 
-                    "kXYiU_JCYtU", "RgKAFK5djSk", "hT_nvWreIhg", "JGwWNGJdvx8", "fRh_vgS2dFE"
-                ] 
+                    { id: "d-diB65scQU", name: "Happy Song 1", duration: "3:45" },
+                    { id: "ZbZSe6N_BXs", name: "Happy Song 2", duration: "4:12" },
+                    { id: "y6Sxv-sUYtM", name: "Happy Song 3", duration: "3:30" },
+                    { id: "CevxZvSJLk8", name: "Happy Song 4", duration: "4:00" },
+                    { id: "OPf0YbXqDm0", name: "Happy Song 5", duration: "3:55" },
+                    { id: "kXYiU_JCYtU", name: "Happy Song 6", duration: "3:20" },
+                    { id: "RgKAFK5djSk", name: "Happy Song 7", duration: "4:10" },
+                    { id: "hT_nvWreIhg", name: "Happy Song 8", duration: "3:50" },
+                    { id: "JGwWNGJdvx8", name: "Happy Song 9", duration: "3:40" },
+                    { id: "fRh_vgS2dFE", name: "Happy Song 10", duration: "4:05" }
+                ]
             },
-            sad: { 
-                video: "sIaT8Jl2zpI", 
-                bg: "sad.jpg", 
-                quote: "Tears come from the heart, not the brain.", 
-                song: "Sad Melodies", 
+            sad: {
+                video: "sIaT8Jl2zpI",
+                bg: "sad.jpg",
+                quote: "Tears come from the heart, not the brain.",
+                song: "Sad Melodies",
                 playlist: [
-                    "sIaT8Jl2zpI", "RgKAFK5djSk", "kJQP7kiw5Fk", "YQHsXMglC9A", "fRh_vgS2dFE", 
-                    "hT_nvWreIhg", "OPf0YbXqDm0", "CevxZvSJLk8", "y6Sxv-sUYtM", "ZbZSe6N_BXs"
-                ] 
+                    { id: "sIaT8Jl2zpI", name: "Sad Song 1", duration: "4:20" },
+                    { id: "RgKAFK5djSk", name: "Sad Song 2", duration: "3:45" },
+                    { id: "kJQP7kiw5Fk", name: "Sad Song 3", duration: "4:00" },
+                    { id: "YQHsXMglC9A", name: "Sad Song 4", duration: "3:55" },
+                    { id: "fRh_vgS2dFE", name: "Sad Song 5", duration: "4:10" },
+                    { id: "hT_nvWreIhg", name: "Sad Song 6", duration: "3:50" },
+                    { id: "OPf0YbXqDm0", name: "Sad Song 7", duration: "3:40" },
+                    { id: "CevxZvSJLk8", name: "Sad Song 8", duration: "4:05" },
+                    { id: "y6Sxv-sUYtM", name: "Sad Song 9", duration: "3:30" },
+                    { id: "ZbZSe6N_BXs", name: "Sad Song 10", duration: "4:12" }
+                ]
             },
-            energetic: { 
-                video: "3GwjfUFyY6M", 
-                bg: "energetic.jpg", 
-                quote: "Energy and persistence conquer all things.", 
-                song: "Power Boost", 
+            energetic: {
+                video: "3GwjfUFyY6M",
+                bg: "energetic.jpg",
+                quote: "Energy and persistence conquer all things.",
+                song: "Power Boost",
                 playlist: [
-                    "3GwjfUFyY6M", "2vjPBrBU-TM", "hHUbLv4ThOo", "kJQP7kiw5Fk", "RgKAFK5djSk", 
-                    "y6Sxv-sUYtM", "CevxZvSJLk8", "OPf0YbXqDm0", "kXYiU_JCYtU", "fRh_vgS2dFE"
-                ] 
+                    { id: "3GwjfUFyY6M", name: "Energetic Song 1", duration: "3:30" },
+                    { id: "2vjPBrBU-TM", name: "Energetic Song 2", duration: "4:00" },
+                    { id: "hHUbLv4ThOo", name: "Energetic Song 3", duration: "3:45" },
+                    { id: "kJQP7kiw5Fk", name: "Energetic Song 4", duration: "4:10" },
+                    { id: "RgKAFK5djSk", name: "Energetic Song 5", duration: "3:55" },
+                    { id: "y6Sxv-sUYtM", name: "Energetic Song 6", duration: "3:40" },
+                    { id: "CevxZvSJLk8", name: "Energetic Song 7", duration: "4:05" },
+                    { id: "OPf0YbXqDm0", name: "Energetic Song 8", duration: "3:50" },
+                    { id: "kXYiU_JCYtU", name: "Energetic Song 9", duration: "3:20" },
+                    { id: "fRh_vgS2dFE", name: "Energetic Song 10", duration: "4:15" }
+                ]
             },
-            relaxed: { 
-                video: "5qap5aO4i9A", 
-                bg: "relaxed.jpg", 
-                quote: "Relax, refresh, recharge.", 
-                song: "Chill Tunes", 
+            relaxed: {
+                video: "5qap5aO4i9A",
+                bg: "relaxed.jpg",
+                quote: "Relax, refresh, recharge.",
+                song: "Chill Tunes",
                 playlist: [
-                    "5qap5aO4i9A", "DWcJFNfaw9c", "lTRiuFIWV54", "hT_nvWreIhg", "OPf0YbXqDm0", 
-                    "CevxZvSJLk8", "y6Sxv-sUYtM", "ZbZSe6N_BXs", "RgKAFK5djSk", "fRh_vgS2dFE"
-                ] 
+                    { id: "5qap5aO4i9A", name: "Relaxed Song 1", duration: "3:50" },
+                    { id: "DWcJFNfaw9c", name: "Relaxed Song 2", duration: "4:00" },
+                    { id: "lTRiuFIWV54", name: "Relaxed Song 3", duration: "3:45" },
+                    { id: "hT_nvWreIhg", name: "Relaxed Song 4", duration: "4:10" },
+                    { id: "OPf0YbXqDm0", name: "Relaxed Song 5", duration: "3:55" },
+                    { id: "CevxZvSJLk8", name: "Relaxed Song 6", duration: "4:05" },
+                    { id: "y6Sxv-sUYtM", name: "Relaxed Song 7", duration: "3:40" },
+                    { id: "ZbZSe6N_BXs", name: "Relaxed Song 8", duration: "4:12" },
+                    { id: "RgKAFK5djSk", name: "Relaxed Song 9", duration: "3:50" },
+                    { id: "fRh_vgS2dFE", name: "Relaxed Song 10", duration: "4:15" }
+                ]
             }
         };
         let currentMood, currentIndex = 0;
-        
+
         function loadMood() {
             let params = new URLSearchParams(window.location.search);
             let mood = params.get("mood");
@@ -154,26 +199,51 @@
                 document.getElementById("music-name").innerText = moods[mood].song;
                 document.getElementById("background").style.backgroundImage = `url(${moods[mood].bg})`;
                 loadVideo(0);
+                updateSongList();
             }
         }
-        
+
         function loadVideo(index) {
             let playerDiv = document.getElementById("youtube-player");
-            let videoId = moods[currentMood].playlist[index];
+            let videoId = moods[currentMood].playlist[index].id;
             playerDiv.innerHTML = `<iframe id="yt-iframe" width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
             currentIndex = index;
         }
-        
+
+        function updateSongList() {
+            let songListDiv = document.getElementById("song-list");
+            songListDiv.innerHTML = "";
+            moods[currentMood].playlist.forEach((song, index) => {
+                songListDiv.innerHTML += `
+                    <div class="song-item">
+                        <span>${index + 1}. ${song.name} - ${song.duration}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function togglePlayPause() {
+            let iframe = document.getElementById("yt-iframe");
+            if (iframe) {
+                if (isPlaying) {
+                    iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                } else {
+                    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                }
+                isPlaying = !isPlaying;
+            }
+        }
+
         function nextSong() {
             let nextIndex = (currentIndex + 1) % moods[currentMood].playlist.length;
             loadVideo(nextIndex);
         }
-        
+
         function prevSong() {
             let prevIndex = (currentIndex - 1 + moods[currentMood].playlist.length) % moods[currentMood].playlist.length;
             loadVideo(prevIndex);
         }
-        
+
         window.onload = loadMood;
     </script>
 </head>
@@ -196,7 +266,8 @@
         </div>
         <div id="right-section">
             <div id="game-section">
-                <p>Mini-Game Placeholder</p>
+                <h3>Playlist</h3>
+                <div id="song-list" class="song-list"></div>
             </div>
         </div>
     </div>

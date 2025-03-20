@@ -66,9 +66,15 @@
             align-items: center;
             border-radius: 10px;
             padding: 20px;
-            overflow-y: auto;
+            overflow-y: auto; /* Enable scrolling */
             backdrop-filter: blur(10px);
             position: relative;
+            /* Hide scrollbars */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        #game-section::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, and Opera */
         }
         #playlist-background-video {
             position: absolute;
@@ -155,7 +161,7 @@
         let moods = {
             happy: {
                 video: "d-diB65scQU",
-                bg: "https://www.icegif.com/wp-content/uploads/2022/12/icegif-209.gif",
+                bg: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D",
                 quote: "Happiness is a journey, not a destination.",
                 song: "Happy Vibes",
                 playlist: [
@@ -170,7 +176,7 @@
                     { id: "JGwWNGJdvx8", name: "Happy Song 9", duration: "3:40" },
                     { id: "fRh_vgS2dFE", name: "Happy Song 10", duration: "4:05" }
                 ],
-                playlistBg: "https://videos.pexels.com/video-files/2421545/2421545-uhd_2560_1440_30fps.mp4" // Add your video link here
+                playlistBg: "happy-background-video.mp4" // Add your video link here
             },
             sad: {
                 video: "sIaT8Jl2zpI",

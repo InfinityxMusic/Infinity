@@ -70,7 +70,7 @@
             backdrop-filter: blur(10px);
             position: relative;
         }
-        #playlist-background {
+        #playlist-background-video {
             position: absolute;
             top: 0;
             left: 0;
@@ -170,7 +170,7 @@
                     { id: "JGwWNGJdvx8", name: "Happy Song 9", duration: "3:40" },
                     { id: "fRh_vgS2dFE", name: "Happy Song 10", duration: "4:05" }
                 ],
-                playlistBg: "https://videos.pexels.com/video-files/2421545/2421545-uhd_2560_1440_30fps.mp4" // Background video for playlist
+                playlistBg: "https://videos.pexels.com/video-files/2421545/2421545-uhd_2560_1440_30fps.mp4" // Add your video link here
             },
             sad: {
                 video: "sIaT8Jl2zpI",
@@ -189,7 +189,7 @@
                     { id: "y6Sxv-sUYtM", name: "Sad Song 9", duration: "3:30" },
                     { id: "ZbZSe6N_BXs", name: "Sad Song 10", duration: "4:12" }
                 ],
-                playlistBg: "https://videos.pexels.com/video-files/2421545/2421545-uhd_2560_1440_30fps.mp4" // Background video for playlist
+                playlistBg: "sad-background-video.mp4" // Add your video link here
             },
             energetic: {
                 video: "3GwjfUFyY6M",
@@ -208,7 +208,7 @@
                     { id: "kXYiU_JCYtU", name: "Energetic Song 9", duration: "3:20" },
                     { id: "fRh_vgS2dFE", name: "Energetic Song 10", duration: "4:15" }
                 ],
-                playlistBg: "https://videos.pexels.com/video-files/2421545/2421545-uhd_2560_1440_30fps.mp4" // Background video for playlist
+                playlistBg: "energetic-background-video.mp4" // Add your video link here
             },
             relaxed: {
                 video: "5qap5aO4i9A",
@@ -227,7 +227,7 @@
                     { id: "RgKAFK5djSk", name: "Relaxed Song 9", duration: "3:50" },
                     { id: "fRh_vgS2dFE", name: "Relaxed Song 10", duration: "4:15" }
                 ],
-                playlistBg: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1&loop=1&controls=0&playlist=5qap5aO4i9A" // Background video for playlist
+                playlistBg: "relaxed-background-video.mp4" // Add your video link here
             }
         };
         let currentMood, currentIndex = 0;
@@ -248,8 +248,8 @@
         }
 
         function setPlaylistBackground(videoUrl) {
-            let playlistBgDiv = document.getElementById("playlist-background");
-            playlistBgDiv.innerHTML = `<iframe width="100%" height="100%" src="${videoUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            let playlistBgDiv = document.getElementById("playlist-background-video");
+            playlistBgDiv.innerHTML = `<video autoplay muted loop id="bg-video"><source src="${videoUrl}" type="video/mp4"></video>`;
         }
 
         function loadVideo(index) {
@@ -321,7 +321,7 @@
         </div>
         <div id="right-section">
             <div id="game-section">
-                <div id="playlist-background"></div>
+                <div id="playlist-background-video"></div>
                 <h3>Playlist</h3>
                 <div id="song-list" class="song-list"></div>
             </div>

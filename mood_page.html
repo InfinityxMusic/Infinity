@@ -68,6 +68,18 @@
             padding: 20px;
             overflow-y: auto;
             backdrop-filter: blur(10px);
+            position: relative;
+        }
+        #playlist-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.5;
+            border-radius: 10px;
         }
         .controls {
             display: flex;
@@ -103,34 +115,38 @@
         }
         .song-list {
             width: 100%;
-            text-align: center;
+            text-align: left;
         }
         .song-item {
             margin: 10px 0;
             font-size: 14px;
             padding: 10px;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         .song-item.active {
             background: rgba(255, 255, 255, 0.2);
-            position: relative;
+            transform: scale(1.02);
         }
-        .song-item.active::after {
+        .song-item.active::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
+            left: -100%;
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
-            animation: glow 1.5s infinite;
-            border-radius: 5px;
+            animation: glow 2s infinite;
         }
         @keyframes glow {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
     </style>
     <script>
@@ -153,7 +169,8 @@
                     { id: "hT_nvWreIhg", name: "Happy Song 8", duration: "3:50" },
                     { id: "JGwWNGJdvx8", name: "Happy Song 9", duration: "3:40" },
                     { id: "fRh_vgS2dFE", name: "Happy Song 10", duration: "4:05" }
-                ]
+                ],
+                playlistBg: "https://www.youtube.com/embed/d-diB65scQU?autoplay=1&mute=1&loop=1&controls=0&playlist=d-diB65scQU" // Background video for playlist
             },
             sad: {
                 video: "sIaT8Jl2zpI",
@@ -171,7 +188,8 @@
                     { id: "CevxZvSJLk8", name: "Sad Song 8", duration: "4:05" },
                     { id: "y6Sxv-sUYtM", name: "Sad Song 9", duration: "3:30" },
                     { id: "ZbZSe6N_BXs", name: "Sad Song 10", duration: "4:12" }
-                ]
+                ],
+                playlistBg: "https://www.youtube.com/embed/sIaT8Jl2zpI?autoplay=1&mute=1&loop=1&controls=0&playlist=sIaT8Jl2zpI" // Background video for playlist
             },
             energetic: {
                 video: "3GwjfUFyY6M",
@@ -189,7 +207,8 @@
                     { id: "OPf0YbXqDm0", name: "Energetic Song 8", duration: "3:50" },
                     { id: "kXYiU_JCYtU", name: "Energetic Song 9", duration: "3:20" },
                     { id: "fRh_vgS2dFE", name: "Energetic Song 10", duration: "4:15" }
-                ]
+                ],
+                playlistBg: "https://www.youtube.com/embed/3GwjfUFyY6M?autoplay=1&mute=1&loop=1&controls=0&playlist=3GwjfUFyY6M" // Background video for playlist
             },
             relaxed: {
                 video: "5qap5aO4i9A",
@@ -207,7 +226,8 @@
                     { id: "ZbZSe6N_BXs", name: "Relaxed Song 8", duration: "4:12" },
                     { id: "RgKAFK5djSk", name: "Relaxed Song 9", duration: "3:50" },
                     { id: "fRh_vgS2dFE", name: "Relaxed Song 10", duration: "4:15" }
-                ]
+                ],
+                playlistBg: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1&loop=1&controls=0&playlist=5qap5aO4i9A" // Background video for playlist
             }
         };
         let currentMood, currentIndex = 0;
@@ -223,7 +243,13 @@
                 document.getElementById("background").style.backgroundImage = `url(${moods[mood].bg})`;
                 loadVideo(0);
                 updateSongList();
+                setPlaylistBackground(moods[mood].playlistBg);
             }
+        }
+
+        function setPlaylistBackground(videoUrl) {
+            let playlistBgDiv = document.getElementById("playlist-background");
+            playlistBgDiv.innerHTML = `<iframe width="100%" height="100%" src="${videoUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         }
 
         function loadVideo(index) {
@@ -240,11 +266,15 @@
             moods[currentMood].playlist.forEach((song, index) => {
                 let isActive = index === currentIndex;
                 songListDiv.innerHTML += `
-                    <div class="song-item ${isActive ? 'active' : ''}">
+                    <div class="song-item ${isActive ? 'active' : ''}" onclick="playSong(${index})">
                         <span>${index + 1}. ${song.name} - ${song.duration}</span>
                     </div>
                 `;
             });
+        }
+
+        function playSong(index) {
+            loadVideo(index);
         }
 
         function togglePlayPause() {
@@ -291,6 +321,7 @@
         </div>
         <div id="right-section">
             <div id="game-section">
+                <div id="playlist-background"></div>
                 <h3>Playlist</h3>
                 <div id="song-list" class="song-list"></div>
             </div>

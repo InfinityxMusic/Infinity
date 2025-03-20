@@ -61,29 +61,24 @@
             height: 80%;
             background: rgba(255, 255, 255, 0.1);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             border-radius: 10px;
-            overflow-y: auto;
-            padding: 10px;
         }
-        .song {
+        .controls {
             display: flex;
-            align-items: center;
-            margin: 10px;
-        }
-        .song img {
-            width: 60px;
-            height: 60px;
-            border-radius: 5px;
-            margin-right: 10px;
+            gap: 10px;
         }
         .controls-container {
+            width: 90%;
+            background: rgba(255, 255, 255, 0.1); /* White with 10% opacity */
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Very faint border */
         }
         .controls button {
             padding: 0;
@@ -104,40 +99,82 @@
         }
     </style>
     <script>
+        let player;
         let moods = {
-            happy: {
-                playlist: ["d-diB65scQU", "ZbZSe6N_BXs", "y6Sxv-sUYtM", "song4", "song5", "song6", "song7", "song8", "song9", "song10"],
+            happy: { 
+                video: "d-diB65scQU", 
+                bg: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZGFyayUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D", 
+                quote: "Happiness is a journey, not a destination.", 
+                song: "Happy Vibes", 
+                playlist: [
+                    "d-diB65scQU", "ZbZSe6N_BXs", "y6Sxv-sUYtM", "CevxZvSJLk8", "OPf0YbXqDm0", 
+                    "kXYiU_JCYtU", "RgKAFK5djSk", "hT_nvWreIhg", "JGwWNGJdvx8", "fRh_vgS2dFE"
+                ] 
             },
-            sad: {
-                playlist: ["sIaT8Jl2zpI", "RgKAFK5djSk", "kJQP7kiw5Fk", "song4", "song5", "song6", "song7", "song8", "song9", "song10"],
+            sad: { 
+                video: "sIaT8Jl2zpI", 
+                bg: "sad.jpg", 
+                quote: "Tears come from the heart, not the brain.", 
+                song: "Sad Melodies", 
+                playlist: [
+                    "sIaT8Jl2zpI", "RgKAFK5djSk", "kJQP7kiw5Fk", "YQHsXMglC9A", "fRh_vgS2dFE", 
+                    "hT_nvWreIhg", "OPf0YbXqDm0", "CevxZvSJLk8", "y6Sxv-sUYtM", "ZbZSe6N_BXs"
+                ] 
             },
-            energetic: {
-                playlist: ["3GwjfUFyY6M", "2vjPBrBU-TM", "hHUbLv4ThOo", "song4", "song5", "song6", "song7", "song8", "song9", "song10"],
+            energetic: { 
+                video: "3GwjfUFyY6M", 
+                bg: "energetic.jpg", 
+                quote: "Energy and persistence conquer all things.", 
+                song: "Power Boost", 
+                playlist: [
+                    "3GwjfUFyY6M", "2vjPBrBU-TM", "hHUbLv4ThOo", "kJQP7kiw5Fk", "RgKAFK5djSk", 
+                    "y6Sxv-sUYtM", "CevxZvSJLk8", "OPf0YbXqDm0", "kXYiU_JCYtU", "fRh_vgS2dFE"
+                ] 
             },
-            relaxed: {
-                playlist: ["5qap5aO4i9A", "DWcJFNfaw9c", "lTRiuFIWV54", "song4", "song5", "song6", "song7", "song8", "song9", "song10"],
+            relaxed: { 
+                video: "5qap5aO4i9A", 
+                bg: "relaxed.jpg", 
+                quote: "Relax, refresh, recharge.", 
+                song: "Chill Tunes", 
+                playlist: [
+                    "5qap5aO4i9A", "DWcJFNfaw9c", "lTRiuFIWV54", "hT_nvWreIhg", "OPf0YbXqDm0", 
+                    "CevxZvSJLk8", "y6Sxv-sUYtM", "ZbZSe6N_BXs", "RgKAFK5djSk", "fRh_vgS2dFE"
+                ] 
             }
         };
+        let currentMood, currentIndex = 0;
         
-        function loadGameSection() {
-            let gameSection = document.getElementById("game-section");
-            gameSection.innerHTML = "";
-            
-            let mood = new URLSearchParams(window.location.search).get("mood");
+        function loadMood() {
+            let params = new URLSearchParams(window.location.search);
+            let mood = params.get("mood");
             if (mood && moods[mood]) {
-                moods[mood].playlist.forEach((song, index) => {
-                    let songElement = document.createElement("div");
-                    songElement.classList.add("song");
-                    songElement.innerHTML = `
-                        <img src="thumbnail${index + 1}.jpg" alt="Thumbnail">
-                        <span>Song ${index + 1}</span>
-                    `;
-                    gameSection.appendChild(songElement);
-                });
+                currentMood = mood;
+                document.getElementById("mood-name").innerText = mood.charAt(0).toUpperCase() + mood.slice(1);
+                document.getElementById("quote").innerText = moods[mood].quote;
+                document.getElementById("music-name").innerText = moods[mood].song;
+                document.getElementById("background").style.backgroundImage = `url(${moods[mood].bg})`;
+                loadVideo(0);
             }
         }
         
-        window.onload = loadGameSection;
+        function loadVideo(index) {
+            let playerDiv = document.getElementById("youtube-player");
+            let videoId = moods[currentMood].playlist[index];
+            playerDiv.innerHTML = `<iframe id="yt-iframe" width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            currentIndex = index;
+        }
+        
+        function nextSong() {
+            let nextIndex = (currentIndex + 1) % moods[currentMood].playlist.length;
+            loadVideo(nextIndex);
+        }
+        
+        function prevSong() {
+            let prevIndex = (currentIndex - 1 + moods[currentMood].playlist.length) % moods[currentMood].playlist.length;
+            loadVideo(prevIndex);
+        }
+        
+        window.onload = loadMood;
     </script>
 </head>
 <body>
@@ -159,7 +196,7 @@
         </div>
         <div id="right-section">
             <div id="game-section">
-                <p>Loading song list...</p>
+                <p>Mini-Game Placeholder</p>
             </div>
         </div>
     </div>
